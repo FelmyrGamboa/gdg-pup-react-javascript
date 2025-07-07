@@ -37,6 +37,7 @@ function AssignmentFour() {
 
   const handleRegionChange = (e) => {
     const regionCode = e.target.value;
+    console.log(e);
     setSelectedRegion(regionCode);
     setSelectedProvince('');
     setSelectedCity('');
@@ -46,10 +47,19 @@ function AssignmentFour() {
     setBarangays([]);
 
     if (regionCode) {
-      fetch(`https://psgc.cloud/api/regions/${regionCode}/provinces`)
-      .then((response) => response.json())
-      .then((data) => setProvinces(data || []))
-      .catch((error) => alert("Error fetching provinces:", error))
+      if (regionCode === "1300000000") {
+        setProvinces([])
+        fetch(`https://psgc.cloud/api/regions/${regionCode}/cities`)
+        .then((response) => response.json())
+        .then((data) => setCities(data || []))
+        document.getElementById("province").disabled = true;
+      } else {
+        fetch(`https://psgc.cloud/api/regions/${regionCode}/provinces`)
+        .then((response) => response.json())
+        .then((data) => setProvinces(data || []))
+        .catch((error) => alert("Error fetching provinces:", error))
+        document.getElementById("province").disabled = false;
+      }
     }
   }
 
@@ -71,6 +81,7 @@ function AssignmentFour() {
 
   const handleCityChange = (e) => {
     const cityCode = e.target.value;
+    console.log(cityCode);
     setSelectedCity(cityCode);
     setSelectedBarangay('');
     setBarangays([]);
@@ -79,25 +90,33 @@ function AssignmentFour() {
       fetch(`https://psgc.cloud/api/municipalities/${cityCode}/barangays`)
       .then((response) => response.json())
       .then((data) => setBarangays(data || []))
-      .catch((error) => alert("Error fetching barangays:", error));
+      // .catch((error) => alert("Error fetching barangays:", error));
+      .catch((error) => fetch(`https://psgc.cloud/api/cities/${cityCode}/barangays`)
+      .then((response) => response.json())
+      .then((data) => setBarangays(data || [])))
     }
   }
 
   const handleConfirm = () => {
-    if (
-      !selectedRegion ||
-      !selectedProvince ||
-      !selectedCity || 
-      !selectedBarangay
+   if(
+    !selectedProvince && 
+    selectedRegion && 
+    selectedCity && 
+    selectedBarangay
+      // !selectedRegion ||
+      // !selectedProvince ||
+      // !selectedCity || 
+      // !selectedBarangay
     ) {
+      setSelectedProvince([])
+    } else {
       alert("Please fill out all required fields.");
-      return;
     }
 
-    const regionName = regions.find((region) => region.code === selectedRegion)?.name || "Unknown Region";
-    const provinceName = provinces.find((province) => province.code === selectedProvince)?.name || "Unknown Province";
-    const cityName = cities.find((city) => city.code === selectedCity)?.name || "Unknown City";
-    const barangayName = barangays.find((barangay) => barangay.code === selectedBarangay)?.name || "unknown Barangay";
+    const regionName = regions.find((region) => region.code === selectedRegion)?.name || "";
+    const provinceName = provinces.find((province) => province.code === selectedProvince)?.name || "";
+    const cityName = cities.find((city) => city.code === selectedCity)?.name || "";
+    const barangayName = barangays.find((barangay) => barangay.code === selectedBarangay)?.name || "";
     const address = [zipCode, otherAddress, barangayName, cityName, provinceName, regionName]
 
     setDisplayAddress(
