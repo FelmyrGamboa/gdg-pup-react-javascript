@@ -14,19 +14,22 @@ function AssignmentFour() {
   const [otherAddress, setOtherAddress] = useState("");
   const [displayAddress, setDisplayAddress] = useState("");
 
+  // new code
   useEffect(() => {
     const fetchRegions = async () => {
       try {
         const response = await fetch("https://psgc.cloud/api/regions");
         const data = await response.json();
+        console.log(data);
         if (Array.isArray(data)) {
           setRegions(data);
         } else {
-          console.error("Unexpected response format:", data);
+          console.error("Unexpected Response format: ", data);
+          alert("Unexpected Response format: ", data);
         }
       } catch (error) {
-        console.error("Error fetching regions:", error);
-      }
+      console.error("Error fetching regions: ", error)
+      } 
     };
 
     fetchRegions();
@@ -35,82 +38,196 @@ function AssignmentFour() {
   const handleRegionChange = (e) => {
     const regionCode = e.target.value;
     setSelectedRegion(regionCode);
-    setSelectedProvince("");
-    setSelectedCity("");
-    setSelectedBarangay("");
+    setSelectedProvince('');
+    setSelectedCity('');
+    setSelectedBarangay('');
     setProvinces([]);
     setCities([]);
     setBarangays([]);
 
     if (regionCode) {
       fetch(`https://psgc.cloud/api/regions/${regionCode}/provinces`)
-        .then((response) => response.json())
-        .then((data) => setProvinces(data || []))
-        .catch((error) => console.error("Error fetching provinces:", error));
+      .then((response) => response.json())
+      .then((data) => setProvinces(data || []))
+      .catch((error) => alert("Error fetching provinces:", error))
     }
-  };
+  }
 
   const handleProvinceChange = (e) => {
     const provinceCode = e.target.value;
     setSelectedProvince(provinceCode);
-    setSelectedCity("");
-    setSelectedBarangay("");
+    setSelectedCity('');
+    setSelectedBarangay('');
     setCities([]);
+    setBarangays([]);
 
     if (provinceCode) {
-      fetch(
-        `https://psgc.cloud/api/provinces/${provinceCode}/cities-municipalities`
-      )
-        .then((response) => response.json())
-        .then((data) => setCities(data || []))
-        .catch((error) => console.error("Error fetching cities:", error));
+      fetch(`https://psgc.cloud/api/provinces/${provinceCode}/cities-municipalities`)
+      .then((response) => response.json())
+      .then((data) => setCities(data || []))
+      .catch((error) => alert("Error fetching cities:", error));
     }
   };
 
   const handleCityChange = (e) => {
     const cityCode = e.target.value;
     setSelectedCity(cityCode);
-    setSelectedBarangay("");
+    setSelectedBarangay('');
+    setBarangays([]);
 
     if (cityCode) {
       fetch(`https://psgc.cloud/api/municipalities/${cityCode}/barangays`)
-        .then((response) => response.json())
-        .then((data) => setBarangays(data || []))
-        .catch((error) => console.error("Error fetching barangays:", error));
+      .then((response) => response.json())
+      .then((data) => setBarangays(data || []))
+      .catch((error) => alert("Error fetching barangays:", error));
     }
-  };
+  }
 
   const handleConfirm = () => {
     if (
       !selectedRegion ||
       !selectedProvince ||
-      !selectedCity ||
-      !selectedBarangay ||
-      !zipCode
+      !selectedCity || 
+      !selectedBarangay
     ) {
       alert("Please fill out all required fields.");
       return;
     }
 
-    const regionName =
-      regions.find((region) => region.code === selectedRegion)?.name ||
-      "Unknown Region";
-    const provinceName =
-      provinces.find((province) => province.code === selectedProvince)?.name ||
-      "Unknown Province";
-    const cityName =
-      cities.find((city) => city.code === selectedCity)?.name || "Unknown City";
-    const barangayName =
-      barangays.find((barangay) => barangay.code === selectedBarangay)?.name ||
-      "Unknown Barangay";
+    const regionName = regions.find((region) => region.code === selectedRegion)?.name || "Unknown Region";
+    const provinceName = provinces.find((province) => province.code === selectedProvince)?.name || "Unknown Province";
+    const cityName = cities.find((city) => city.code === selectedCity)?.name || "Unknown City";
+    const barangayName = barangays.find((barangay) => barangay.code === selectedBarangay)?.name || "unknown Barangay";
+    const address = [zipCode, otherAddress, barangayName, cityName, provinceName, regionName]
 
     setDisplayAddress(
-      `You live in   ${
-        otherAddress || ""
-      }, ${barangayName}, ${cityName}, ${provinceName}, ${regionName}, ${zipCode}, Philippines. 
-      `
-    );
+      `You live in ${address.filter(Boolean).join(', ')}, Philippines`
+    )
+
+    // setDisplayAddress(
+    //   `You live in ${ 
+    //     otherAddress || ''}, ${barangayName}, ${cityName}, ${provinceName}, ${regionName}, Philippines.
+    //   `
+    // );
   };
+
+  // useEffect(() => {
+  //   const fetchRegions = async () => {
+  //     try {
+  //       const response = await fetch("https://psgc.cloud/api/regions");
+  //       const data = await response.json();
+  //       if (Array.isArray(data)) {
+  //         setRegions(data);
+  //       } else {
+  //         console.error("Unexpected response format:", data);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching regions:", error);
+  //     }
+  //   };
+
+  //   fetchRegions();
+  // }, []);
+
+  // const handleRegionChange = (e) => {
+  //   const regionCode = e.target.value;
+  //   setSelectedRegion(regionCode);
+  //   setSelectedProvince("");
+  //   setSelectedCity("");
+  //   setSelectedBarangay("");
+  //   setProvinces([]);
+  //   setCities([]);
+  //   setBarangays([]);
+
+  //   if (regionCode) {
+  //     fetch(`https://psgc.cloud/api/regions/${regionCode}/provinces`)
+  //       .then((response) => response.json())
+  //       .then((data) => setProvinces(data || []))
+  //       .catch((error) => console.error("Error fetching provinces:", error));
+  //   }
+  // };
+
+  // // new code
+  // // useEffect(() => {
+  // //   const fetchProvinces = async () => {
+  // //     try {
+  // //       const response = await response.json();
+  // //       const data = await response.json();
+  // //       if (Array.isArray(data)) {
+  // //         setProvinces(data);
+  // //       } else {
+  // //         console.error("Unexpected response format:", data);
+  // //       }
+  // //     } catch (error) {
+  // //       console.error("Error fetching provinces:", error);
+  // //     }
+  // //   };
+
+  // //   fetchProvinces();
+  // // }, []);
+
+  // const handleProvinceChange = (e) => {
+  //   const provinceCode = e.target.value;
+  //   setSelectedProvince(provinceCode);
+  //   setSelectedCity("");
+  //   setSelectedBarangay("");
+  //   setCities([]);
+
+  //   if (provinceCode) {
+  //     fetch(
+  //       `https://psgc.cloud/api/provinces/${provinceCode}/cities-municipalities`
+  //     )
+  //       .then((response) => response.json())
+  //       .then((data) => setCities(data || []))
+  //       .catch((error) => console.error("Error fetching cities:", error));
+  //   }
+  // };
+
+  // const handleCityChange = (e) => {
+  //   const cityCode = e.target.value;
+  //   setSelectedCity(cityCode);
+  //   setSelectedBarangay("");
+
+  //   if (cityCode) {
+  //     fetch(`https://psgc.cloud/api/municipalities/${cityCode}/barangays`)
+  //       .then((response) => response.json())
+  //       .then((data) => setBarangays(data || []))
+  //       .catch((error) => console.error("Error fetching barangays:", error));
+  //   }
+  //   console.log(cityCode)
+  // };
+
+  // const handleConfirm = () => {
+  //   if (
+  //     !selectedRegion ||
+  //     !selectedProvince ||
+  //     !selectedCity ||
+  //     !selectedBarangay ||
+  //     !zipCode
+  //   ) {
+  //     alert("Please fill out all required fields.");
+  //     return;
+  //   }
+
+  //   const regionName =
+  //     regions.find((region) => region.code === selectedRegion)?.name ||
+  //     "Unknown Region";
+  //   const provinceName =
+  //     provinces.find((province) => province.code === selectedProvince)?.name ||
+  //     "Unknown Province";
+  //   const cityName =
+  //     cities.find((city) => city.code === selectedCity)?.name || "Unknown City";
+  //   const barangayName =
+  //     barangays.find((barangay) => barangay.code === selectedBarangay)?.name ||
+  //     "Unknown Barangay";
+
+  //   setDisplayAddress(
+  //     `You live in   ${
+  //       otherAddress || ""
+  //     }, ${barangayName}, ${cityName}, ${provinceName}, ${regionName}, ${zipCode}, Philippines. 
+  //     `
+  //   );
+  // };
 
   return (
     <div className="address-container">
@@ -129,7 +246,10 @@ function AssignmentFour() {
           <div className="address-display">{displayAddress}</div>
         )}
         <div className="form-group">
-          <label htmlFor="region">Region</label>
+          <label htmlFor="region">
+            Region
+            <span style={{ color: 'red' }}>*</span>
+          </label>
           <select
             id="region"
             value={selectedRegion}
@@ -144,7 +264,10 @@ function AssignmentFour() {
           </select>
         </div>
         <div className="form-group">
-          <label htmlFor="province">Province</label>
+          <label htmlFor="province">
+            Province
+            <span style={{ color: 'red' }}>*</span>
+          </label>
           <select
             id="province"
             value={selectedProvince}
@@ -159,7 +282,10 @@ function AssignmentFour() {
           </select>
         </div>
         <div className="form-group">
-          <label htmlFor="city">City/Municipality</label>
+          <label htmlFor="city">
+            City/Municipality
+            <span style={{ color: 'red' }}>*</span>
+          </label>
           <select id="city" value={selectedCity} onChange={handleCityChange}>
             <option value="">Select a City</option>
             {cities.map((city) => (
@@ -170,7 +296,10 @@ function AssignmentFour() {
           </select>
         </div>
         <div className="form-group">
-          <label htmlFor="barangay">Barangay</label>
+          <label htmlFor="barangay">
+            Barangay 
+            <span style={{ color: 'red' }}>*</span>
+          </label>
           <select
             id="barangay"
             value={selectedBarangay}
@@ -185,7 +314,7 @@ function AssignmentFour() {
           </select>
         </div>
         <div className="form-group">
-          <label htmlFor="zipCode">ZIP Code</label>
+          <label htmlFor="zipCode">ZIP Code (Optional) </label>
           <input
             id="zipCode"
             type="text"
