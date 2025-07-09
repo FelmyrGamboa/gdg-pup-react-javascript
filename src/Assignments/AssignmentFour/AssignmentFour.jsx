@@ -14,6 +14,9 @@ function AssignmentFour() {
   const [otherAddress, setOtherAddress] = useState("");
   const [displayAddress, setDisplayAddress] = useState("");
 
+  const [districts, setDistricts] = useState([]);
+  const [selectedDistrict, setSelectedDistrict] = useState('');
+
   // new code
   useEffect(() => {
     const fetchRegions = async () => {
@@ -80,6 +83,42 @@ function AssignmentFour() {
     }
   };
 
+  const handleCityChange = (e) => {
+    const cityCode = e.target.value;
+    console.log(e);
+    setSelectedCity(cityCode);
+    setSelectedBarangay('');
+    setBarangays([]);
+
+    if (cityCode === "1380600000") {
+      fetch(`https://psgc.cloud/api/sub-municipalities`)
+      .then((response) => response.json())
+      .then((data) => setDistricts(data || []))
+    }
+    else if (cityCode) {
+      fetch(`https://psgc.cloud/api/municipalities/${cityCode}/barangays`)
+      .then((response) => response.json())
+      .then((data) => setBarangays(data || []))
+      // .catch((error) => alert("Error fetching barangays:", error));
+      .catch(() => fetch(`https://psgc.cloud/api/cities/${cityCode}/barangays`)
+        .then((response) => response.json())
+        .then((data) => setBarangays(data || [])))
+      }
+  }
+
+  const handleDistrictChange = (e) => {
+    const districtCode = e.target.value
+    setSelectedDistrict(districtCode)
+    setSelectedBarangay('');
+    setBarangays([]);
+
+    if (districtCode) {
+      fetch(`https://psgc.cloud/api/sub-municipalities/${districtCode}/barangays`)
+      .then((response) => response.json())
+      .then((data) => setBarangays(data || []))
+    }
+  }
+
   const handleConfirm = () => {
     if (
       !selectedRegion ||
@@ -117,7 +156,7 @@ function AssignmentFour() {
     const provinceName = provinces.find((province) => province.code === selectedProvince)?.name || "";
     const cityName = cities.find((city) => city.code === selectedCity)?.name || "";
     const barangayName = barangays.find((barangay) => barangay.code === selectedBarangay)?.name || "";
-    const address = [zipCode, otherAddress, barangayName, cityName, provinceName, regionName]
+    const address = [zipCode, otherAddress.trim(' '), barangayName, cityName, provinceName, regionName]
 
     setDisplayAddress(
       `You live in ${address.filter(Boolean).join(', ')}, Philippines`
@@ -315,6 +354,30 @@ function AssignmentFour() {
             ))}
           </select>
         </div>
+        {selectedCity === "1380600000" && (
+          <div className="form-group">
+            <label htmlFor="sub-municipalities">
+              Municipal
+              <span style={{ color: 'red' }}>*</span>
+              </label>
+            {/* <input
+              id="specialNote"
+              type="text"
+              value={specialNote}
+              onChange={(e) => setSpecialNote(e.target.value)}
+            /> */}
+            <select
+              id="district"
+              value={selectedDistrict} onChange={handleDistrictChange}>
+              <option value="">Select a District</option>
+              {districts.map((district) => (
+                <option key={district.code} value={district.code}>
+                  {district.name}
+                </option>
+              ))}
+          </select>
+          </div>
+        )}
         <div className="form-group">
           <label htmlFor="barangay">
             Barangay 
