@@ -27,11 +27,10 @@ function AssignmentFour() {
         if (Array.isArray(data)) {
           setRegions(data);
         } else {
-          console.error("Unexpected Response format: ", data);
           alert("Unexpected Response format: ", data);
         }
       } catch (error) {
-      console.error("Error fetching regions: ", error)
+      console.error("Error fetching Regions: ", error)
       } 
     };
 
@@ -55,14 +54,11 @@ function AssignmentFour() {
         fetch(`https://psgc.cloud/api/regions/${regionCode}/cities`)
         .then((response) => response.json())
         .then((data) => setCities(data || []))
-        console.log(selectedRegion)
-        // document.getElementById("province").disabled = true;
       } else {
         fetch(`https://psgc.cloud/api/regions/${regionCode}/provinces`)
         .then((response) => response.json())
         .then((data) => setProvinces(data || []))
-        .catch((error) => alert("Error fetching provinces:", error))
-        // document.getElementById("province").disabled = false;
+        .catch((error) => alert("Error fetching Provinces:", error))
       }
     }
   }
@@ -79,13 +75,12 @@ function AssignmentFour() {
       fetch(`https://psgc.cloud/api/provinces/${provinceCode}/cities-municipalities`)
       .then((response) => response.json())
       .then((data) => setCities(data || []))
-      .catch((error) => alert("Error fetching cities:", error));
+      .catch((error) => alert("Error fetching Cities:", error));
     }
   };
 
   const handleCityChange = (e) => {
     const cityCode = e.target.value;
-    console.log(e);
     setSelectedCity(cityCode);
     setSelectedBarangay('');
     setBarangays([]);
@@ -94,15 +89,16 @@ function AssignmentFour() {
       fetch(`https://psgc.cloud/api/sub-municipalities`)
       .then((response) => response.json())
       .then((data) => setDistricts(data || []))
+      .catch((error) => alert("Error fetching Districts:", error));
     }
     else if (cityCode) {
       fetch(`https://psgc.cloud/api/municipalities/${cityCode}/barangays`)
       .then((response) => response.json())
       .then((data) => setBarangays(data || []))
-      // .catch((error) => alert("Error fetching barangays:", error));
       .catch(() => fetch(`https://psgc.cloud/api/cities/${cityCode}/barangays`)
         .then((response) => response.json())
         .then((data) => setBarangays(data || [])))
+        .catch((error) => alert("Error fetching Barangays:", error));
       }
   }
 
@@ -116,41 +112,20 @@ function AssignmentFour() {
       fetch(`https://psgc.cloud/api/sub-municipalities/${districtCode}/barangays`)
       .then((response) => response.json())
       .then((data) => setBarangays(data || []))
+      .catch((error) => alert("Error fetching Barangays:", error))
     }
   }
 
   const handleConfirm = () => {
     if (
       !selectedRegion ||
-      (selectedRegion !== "1300000000" && !selectedProvince)||
+      (selectedRegion !== "1300000000" && !selectedProvince) ||
       !selectedCity || 
       !selectedBarangay
     ) {
       alert("Please fill out all required fields.");
       return;
     }
-  //  if(
-  //   !selectedProvince && 
-  //   selectedRegion && 
-  //   selectedCity && 
-  //   selectedBarangay
-  //     // !selectedRegion ||
-  //     // !selectedProvince ||
-  //     // !selectedCity || 
-  //     // !selectedBarangay
-  //   ) {
-  //     setSelectedProvince([])
-  //   } else if (
-  //     !selectedRegion ||
-  //     !selectedProvince ||
-  //     !selectedCity || 
-  //     !selectedBarangay
-  //   ) {
-  //     pass
-  //   } else {
-  //     alert("Please fill out all required fields.");
-  //     return;
-  //   }
 
     const regionName = regions.find((region) => region.code === selectedRegion)?.name || "";
     const provinceName = provinces.find((province) => province.code === selectedProvince)?.name || "";
@@ -161,131 +136,7 @@ function AssignmentFour() {
     setDisplayAddress(
       `You live in ${address.filter(Boolean).join(', ')}, Philippines`
     )
-
-    // setDisplayAddress(
-    //   `You live in ${ 
-    //     otherAddress || ''}, ${barangayName}, ${cityName}, ${provinceName}, ${regionName}, Philippines.
-    //   `
-    // );
   };
-
-  // useEffect(() => {
-  //   const fetchRegions = async () => {
-  //     try {
-  //       const response = await fetch("https://psgc.cloud/api/regions");
-  //       const data = await response.json();
-  //       if (Array.isArray(data)) {
-  //         setRegions(data);
-  //       } else {
-  //         console.error("Unexpected response format:", data);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching regions:", error);
-  //     }
-  //   };
-
-  //   fetchRegions();
-  // }, []);
-
-  // const handleRegionChange = (e) => {
-  //   const regionCode = e.target.value;
-  //   setSelectedRegion(regionCode);
-  //   setSelectedProvince("");
-  //   setSelectedCity("");
-  //   setSelectedBarangay("");
-  //   setProvinces([]);
-  //   setCities([]);
-  //   setBarangays([]);
-
-  //   if (regionCode) {
-  //     fetch(`https://psgc.cloud/api/regions/${regionCode}/provinces`)
-  //       .then((response) => response.json())
-  //       .then((data) => setProvinces(data || []))
-  //       .catch((error) => console.error("Error fetching provinces:", error));
-  //   }
-  // };
-
-  // // new code
-  // // useEffect(() => {
-  // //   const fetchProvinces = async () => {
-  // //     try {
-  // //       const response = await response.json();
-  // //       const data = await response.json();
-  // //       if (Array.isArray(data)) {
-  // //         setProvinces(data);
-  // //       } else {
-  // //         console.error("Unexpected response format:", data);
-  // //       }
-  // //     } catch (error) {
-  // //       console.error("Error fetching provinces:", error);
-  // //     }
-  // //   };
-
-  // //   fetchProvinces();
-  // // }, []);
-
-  // const handleProvinceChange = (e) => {
-  //   const provinceCode = e.target.value;
-  //   setSelectedProvince(provinceCode);
-  //   setSelectedCity("");
-  //   setSelectedBarangay("");
-  //   setCities([]);
-
-  //   if (provinceCode) {
-  //     fetch(
-  //       `https://psgc.cloud/api/provinces/${provinceCode}/cities-municipalities`
-  //     )
-  //       .then((response) => response.json())
-  //       .then((data) => setCities(data || []))
-  //       .catch((error) => console.error("Error fetching cities:", error));
-  //   }
-  // };
-
-  // const handleCityChange = (e) => {
-  //   const cityCode = e.target.value;
-  //   setSelectedCity(cityCode);
-  //   setSelectedBarangay("");
-
-  //   if (cityCode) {
-  //     fetch(`https://psgc.cloud/api/municipalities/${cityCode}/barangays`)
-  //       .then((response) => response.json())
-  //       .then((data) => setBarangays(data || []))
-  //       .catch((error) => console.error("Error fetching barangays:", error));
-  //   }
-  //   console.log(cityCode)
-  // };
-
-  // const handleConfirm = () => {
-  //   if (
-  //     !selectedRegion ||
-  //     !selectedProvince ||
-  //     !selectedCity ||
-  //     !selectedBarangay ||
-  //     !zipCode
-  //   ) {
-  //     alert("Please fill out all required fields.");
-  //     return;
-  //   }
-
-  //   const regionName =
-  //     regions.find((region) => region.code === selectedRegion)?.name ||
-  //     "Unknown Region";
-  //   const provinceName =
-  //     provinces.find((province) => province.code === selectedProvince)?.name ||
-  //     "Unknown Province";
-  //   const cityName =
-  //     cities.find((city) => city.code === selectedCity)?.name || "Unknown City";
-  //   const barangayName =
-  //     barangays.find((barangay) => barangay.code === selectedBarangay)?.name ||
-  //     "Unknown Barangay";
-
-  //   setDisplayAddress(
-  //     `You live in   ${
-  //       otherAddress || ""
-  //     }, ${barangayName}, ${cityName}, ${provinceName}, ${regionName}, ${zipCode}, Philippines. 
-  //     `
-  //   );
-  // };
 
   return (
     <div className="address-container">
@@ -357,15 +208,9 @@ function AssignmentFour() {
         {selectedCity === "1380600000" && (
           <div className="form-group">
             <label htmlFor="sub-municipalities">
-              Municipal
+              District
               <span style={{ color: 'red' }}>*</span>
               </label>
-            {/* <input
-              id="specialNote"
-              type="text"
-              value={specialNote}
-              onChange={(e) => setSpecialNote(e.target.value)}
-            /> */}
             <select
               id="district"
               value={selectedDistrict} onChange={handleDistrictChange}>
