@@ -12,28 +12,40 @@ export default function TenziesProject() {
     function generateAllNewDice () {
         const newDice = [];
 
-        for (let i = 0; i < 10; i++) {
-            const rand = { 
+        while (i < 10) {
+            newDice.push({
                 value: Math.ceil(Math.random() * 6), 
-                isClicked: false,
-                id: i + 1 
-            };
-            newDice.push(rand);
+                isClicked: false, 
+                id: i + 1
+            })
         }
+
+        // for (let i = 0; i < 10; i++) {
+        //     const rand = { 
+        //         value: Math.ceil(Math.random() * 6), 
+        //         isClicked: false,
+        //         id: i + 1 
+        //     };
+        //     newDice.push(rand);
+        // }
 
         return newDice;
     }
 
-    function rollDice() {   
-        if (!gameWon) {
-            setDice(oldDice => oldDice.map(die =>
-                die.isClicked ? die : { ...die, value: Math.ceil(Math.random() * 6) } 
-            ));    
-        }
-        else {
-            setDice(generateAllNewDice());
-        }
+    function diceAction() {
+        if (!)
     }
+
+    // function rollDice() {   
+    //     if (!gameWon) {
+    //         setDice(oldDice => oldDice.map(die =>
+    //             die.isClicked ? die : { ...die, value: Math.ceil(Math.random() * 6) } 
+    //         ));    
+    //     }
+    //     else {
+    //         setDice(generateAllNewDice());
+    //     }
+    // }
 
     function hold(id) {
         setDice(oldDice => oldDice.map(die =>
@@ -55,18 +67,34 @@ export default function TenziesProject() {
         <div className="project-container">
             <main>
                 <h1 className="title">
-                    {gameWon ? "Congrats, You Won!" : "Tenzies"} 
+
                 </h1>
-                <p className="instructions">Roll until all dice are the same. Click each die to freeze it at its current value between rolls.</p>
+                <p className="directions"> Roll them dice till you make it all nice! <br/> Click each dice to freeze and watch the numbers slice!</p>
 
                 <div className="dice-container">
-                    {diceElements}
+
                 </div>
 
-                <button className="roll-dice-btn" onClick={rollDice}>
-                    {gameWon ? "New Game" : "Roll"}
+                <button className="roll-dice-btn" onClick={diceAction}>
+                    {gameWon ? "Start Again" : "Roll Again"}
                 </button>
             </main>
         </div>
+        // <div className="project-container">
+        //     <main>
+        //         <h1 className="title">
+        //             {gameWon ? "Congrats, You Won!" : "Tenzies"} 
+        //         </h1>
+        //         <p className="instructions">Roll until all dice are the same. Click each die to freeze it at its current value between rolls.</p>
+
+        //         <div className="dice-container">
+        //             {diceElements}
+        //         </div>
+
+        //         <button className="roll-dice-btn" onClick={rollDice}>
+        //             {gameWon ? "New Game" : "Roll"}
+        //         </button>
+        //     </main>
+        // </div>
     )
 }
