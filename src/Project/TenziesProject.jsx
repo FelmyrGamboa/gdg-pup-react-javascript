@@ -11,13 +11,15 @@ export default function TenziesProject() {
 
     function generateAllNewDice () {
         const newDice = [];
+        let i = 0;
 
         while (i < 10) {
             newDice.push({
                 value: Math.ceil(Math.random() * 6), 
                 isClicked: false, 
                 id: i + 1
-            })
+            });
+            i ++;
         }
 
         // for (let i = 0; i < 10; i++) {
@@ -33,7 +35,13 @@ export default function TenziesProject() {
     }
 
     function diceAction() {
-        if (!)
+        if (!gameWon) {
+            setDice(oldDice => oldDice.map(die => 
+                die.isClicked ? die : { id: die, value: Math.ceil(Math.random() * 6), isClicked: die.isClicked}
+            ))
+        } else {
+            setDice(generateAllNewDice());
+        }
     }
 
     // function rollDice() {   
@@ -67,7 +75,7 @@ export default function TenziesProject() {
         <div className="project-container">
             <main>
                 <h1 className="title">
-
+                    Tenzies Twist
                 </h1>
                 <p className="directions"> Roll them dice till you make it all nice! <br/> Click each dice to freeze and watch the numbers slice!</p>
 
