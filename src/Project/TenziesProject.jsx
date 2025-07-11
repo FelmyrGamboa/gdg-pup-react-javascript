@@ -24,26 +24,16 @@ export default function TenziesProject() {
 
     function generateAllNewDice () {
         const newDice = [];
-        // let i = 0;
+        let i = 0;
 
-        // while (i < 10) {
-        //     newDice.push({
-        //         value: Math.ceil(Math.random() * 6), 
-        //         isClicked: false, 
-        //         id: i + 1
-        //     });
-        //     i ++;
-        // }
-
-        for (let i = 0; i < 10; i++) {
-            const rand = { 
+        while (i < 10) {
+            newDice.push({
                 value: Math.ceil(Math.random() * 6), 
-                isClicked: false,
-                id: i + 1 
-            };
-            newDice.push(rand);
+                isClicked: false, 
+                id: i + 1
+            });
+            i ++;
         }
-
         return newDice;
     }
 
@@ -60,28 +50,11 @@ export default function TenziesProject() {
         }
     }
 
-    // function rollDice() {   
-    //     if (!gameWon) {
-    //         setDice(oldDice => oldDice.map(die =>
-    //             die.isClicked ? die : { ...die, value: Math.ceil(Math.random() * 6) } 
-    //         ));    
-    //     }
-    //     else {
-    //         setDice(generateAllNewDice());
-    //     }
-    // }
-
     function diceClicked(id) {
         setDice(oldDice => oldDice.map(die =>
             die.id === id ? {...die, isClicked: !die.isClicked } : die
         ))
     }
-
-    // function hold(id) {
-    //     setDice(oldDice => oldDice.map(die =>
-    //         die.id === id ? { ...die, isClicked: !die.isClicked } : die
-    //     ));
-    // }
 
     const diceNumbers = dice.map(dieObj => (
         <Die 
@@ -110,23 +83,5 @@ export default function TenziesProject() {
                 </button>
             </main>
         </div>
-
-        
-        // <div className="project-container">
-        //     <main>
-        //         <h1 className="title">
-        //             {gameWon ? "Congrats, You Won!" : "Tenzies"} 
-        //         </h1>
-        //         <p className="instructions">Roll until all dice are the same. Click each die to freeze it at its current value between rolls.</p>
-
-        //         <div className="dice-container">
-        //             {diceElements}
-        //         </div>
-
-        //         <button className="roll-dice-btn" onClick={rollDice}>
-        //             {gameWon ? "New Game" : "Roll"}
-        //         </button>
-        //     </main>
-        // </div>
     )
 }
