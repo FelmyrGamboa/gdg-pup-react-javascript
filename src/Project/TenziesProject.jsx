@@ -1,35 +1,48 @@
-import React, { useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import "./TenziesProject.css";
 import Die from "./Die";
+import confetti from 'canvas-confetti';
+
 
 export default function TenziesProject() {
 
     const [dice, setDice] = useState(() => generateAllNewDice());
+    const [clickCount, setclickCount] = useState(0);
 
     const gameWon = dice.every(die => die.isClicked) && 
                     dice.every(die => die.value === dice[0].value);
 
+    useEffect(() => {
+        if (gameWon) {
+              confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+                });
+            }
+        }, [gameWon]);
+
     function generateAllNewDice () {
         const newDice = [];
-        let i = 0;
+        // let i = 0;
 
-        while (i < 10) {
-            newDice.push({
-                value: Math.ceil(Math.random() * 6), 
-                isClicked: false, 
-                id: i + 1
-            });
-            i ++;
-        }
-
-        // for (let i = 0; i < 10; i++) {
-        //     const rand = { 
+        // while (i < 10) {
+        //     newDice.push({
         //         value: Math.ceil(Math.random() * 6), 
-        //         isClicked: false,
-        //         id: i + 1 
-        //     };
-        //     newDice.push(rand);
+        //         isClicked: false, 
+        //         id: i + 1
+        //     });
+        //     i ++;
         // }
+
+        for (let i = 0; i < 10; i++) {
+            const rand = { 
+                value: Math.ceil(Math.random() * 6), 
+                isClicked: false,
+                id: i + 1 
+            };
+            newDice.push(rand);
+        }
 
         return newDice;
     }
@@ -37,10 +50,13 @@ export default function TenziesProject() {
     function diceAction() {
         if (!gameWon) {
             setDice(oldDice => oldDice.map(die => 
-                die.isClicked ? die : { id: die, value: Math.ceil(Math.random() * 6), isClicked: die.isClicked}
+                die.isClicked ? die : { ...die, value: Math.ceil(Math.random() * 6), isClicked: die.isClicked}
             ))
+
+           setclickCount(prev => prev + 1);
         } else {
             setDice(generateAllNewDice());
+            setclickCount(0);
         }
     }
 
@@ -55,18 +71,24 @@ export default function TenziesProject() {
     //     }
     // }
 
-    function hold(id) {
+    function diceClicked(id) {
         setDice(oldDice => oldDice.map(die =>
-            die.id === id ? { ...die, isClicked: !die.isClicked } : die
-        ));
+            die.id === id ? {...die, isClicked: !die.isClicked } : die
+        ))
     }
 
-    const diceElements = dice.map(dieObj => (
+    // function hold(id) {
+    //     setDice(oldDice => oldDice.map(die =>
+    //         die.id === id ? { ...die, isClicked: !die.isClicked } : die
+    //     ));
+    // }
+
+    const diceNumbers = dice.map(dieObj => (
         <Die 
             key = {dieObj.id}
             value = {dieObj.value} 
             isClicked = {dieObj.isClicked}
-            hold = {hold}
+            hold = {diceClicked}
             id = {dieObj.id}
         />
     ));
@@ -75,12 +97,12 @@ export default function TenziesProject() {
         <div className="project-container">
             <main>
                 <h1 className="title">
-                    Tenzies Twist
+                    {gameWon ? "Congratulations!!" : "Tenzies Twist"}
                 </h1>
-                <p className="directions"> Roll them dice till you make it all nice! <br/> Click each dice to freeze and watch the numbers slice!</p>
+                <p className="directions"> {gameWon ? `Number of times you rolled: ${clickCount}`: `Roll them dice till you make it all nice! \n Click each dice to freeze and watch the numbers slice!`}</p>
 
                 <div className="dice-container">
-
+                    {diceNumbers}
                 </div>
 
                 <button className="roll-dice-btn" onClick={diceAction}>
@@ -88,6 +110,8 @@ export default function TenziesProject() {
                 </button>
             </main>
         </div>
+
+        
         // <div className="project-container">
         //     <main>
         //         <h1 className="title">

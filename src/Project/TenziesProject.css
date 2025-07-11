@@ -28,6 +28,32 @@ main {
     padding: 10px;
 }
 
+.dice-container {
+    display: grid;
+    grid-template: auto auto / repeat(5, 1fr);
+    gap: 20px;
+    padding-bottom: 15px;
+    padding-top: 15px;
+}
+
+.dice-container button {
+    width: 60px;
+    border-radius: 10px;
+    border: none;
+    font-size: 1.5rem;
+    font-weight: bold;
+    transition: transform 0.1s ease;
+}
+
+.dice-container button:hover {
+    transform: scale(1.02);
+}
+
+.dice-container button:active {
+    transform: scale(1.05);
+}
+
+
 .roll-dice-btn {
     height: 50px;
     width: 50%;
@@ -37,6 +63,10 @@ main {
     font-size: 1.20rem;
     font-weight: bold;
     cursor: pointer;
+}
+
+.roll-dice-btn:hover {
+    transform: scale(1.1);
 }
 
 /* * {
